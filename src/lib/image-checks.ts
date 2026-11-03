@@ -50,6 +50,6 @@ export async function assessQuality(buf: Buffer): Promise<QualityReport> {
 
   let quality: QualityReport['quality'] = 'ok';
   if (brightness < 45) quality = 'dark';
-  else if (sharpness < 60) quality = 'blurry';
+  else if (sharpness < 80) quality = 'blurry';
   return { quality, sharpness: Math.round(sharpness), brightness: Math.round(brightness) };
 }
