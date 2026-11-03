@@ -1,0 +1,4 @@
+trip_id,lr_no,eway_bill_no,client,vehicle_no,hired,origin,destination,branch,freight,qty,consignee_name,consignee_phone,dispatch_on,delivered_on
+TRP-67001,LR-PU67001,391000000001,Company B (cement),MH12 QR 1180,no,Pune,Nashik,Pune,24500,480,Demo Traders Pune,90000 11111,2026-11-02,2026-11-03
+TRP-67002,LR-NA67002,391000000002,Company C (steel),MH17 AZ 4410,yes,Nashik,Surat,Nashik,31000,18,Demo Steel Mart,90000 22222,2026-11-02,
+TRP-67003,LR-NG67003,391000000003,Company D (packaged foods),MH31 CV 2290,no,Nagpur,Raipur,Nagpur,28000,120,Demo Foods Depot,90000 33333,2026-11-01,2026-11-03

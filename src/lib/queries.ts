@@ -9,7 +9,12 @@ export const todayIso = () => new Date().toISOString().slice(0, 10);
 
 export interface DriverTrip {
   id: string; lr_no: string; client: string; destination: string; qty: number; unit: string;
-  pod_status: string; retakes_left: number; delivered_on: string | null; hint: string | null;
+  pod_status: string; retakes_left: number; delivered_on: string | null; retake_reasons: string[];
+}
+
+function lastReasons(d: Database.Database, tripId: string): string[] {
+  const row = d.prepare('SELECT reasons_json FROM pod_submissions WHERE trip_id = ? ORDER BY id DESC LIMIT 1').get(tripId) as { reasons_json: string } | undefined;
+  return row ? (JSON.parse(row.reasons_json) as string[]) : [];
 }
 
 export function driverTrips(userId: number, d: Database.Database = db()): DriverTrip[] {
@@ -21,7 +26,7 @@ export function driverTrips(userId: number, d: Database.Database = db()): Driver
   return rows.map((r) => ({
     id: r.id, lr_no: r.lr_no, client: r.client, destination: r.destination, qty: r.qty, unit: unitFor(r.client_id),
     pod_status: r.pod_status, retakes_left: Math.max(0, MAX_RETAKES - r.retake_count), delivered_on: r.delivered_on,
-    hint: r.pod_status === 'retake_requested' ? r.remarks : null,
+    retake_reasons: r.pod_status === 'retake_requested' ? lastReasons(d, r.id) : [],
   }));
 }
 
@@ -50,14 +55,22 @@ export function maskPhone(p: string | null): string {
   return digits.length < 6 ? '••••' : `${digits.slice(0, 2)}•••••${digits.slice(-3)}`;
 }
 
+export interface TripFull {
+  id: string; lr_no: string; eway_bill_no: string; client_id: number; client: string; billing_cycle: BillingCycle;
+  vehicle_no: string; hired: number; origin: string; destination: string; branch: string; freight: number; qty: number; unit: string;
+  consignee_name: string; consignee_phone: string; dispatch_on: string; delivered_on: string | null;
+  pod_status: string; retake_count: number; remarks: string | null; demo_scenario: string; invoice_id: number | null;
+}
+
 export function tripDetail(tripId: string, d: Database.Database = db()) {
-  const trip = d.prepare(`SELECT t.*, c.name AS client, c.billing_cycle FROM trips t JOIN clients c ON c.id = t.client_id WHERE t.id = ?`).get(tripId) as
-    (Record<string, unknown> & { client_id: number; consignee_phone: string | null }) | undefined;
-  if (!trip) return null;
+  const raw = d.prepare(`SELECT t.*, c.name AS client, c.billing_cycle FROM trips t JOIN clients c ON c.id = t.client_id WHERE t.id = ?`).get(tripId) as
+    (Omit<TripFull, 'unit'> & { consignee_phone: string | null }) | undefined;
+  if (!raw) return null;
+  const trip: TripFull = { ...raw, consignee_phone: maskPhone(raw.consignee_phone), unit: unitFor(raw.client_id) };
   const subs = d.prepare('SELECT * FROM pod_submissions WHERE trip_id = ? ORDER BY id DESC').all(tripId) as
     { id: number; received_at: string; captured_at: string; lat: number | null; lng: number | null; captured_offline: number; source: string; ai_mode: string; extraction_json: string | null; decision: string; reasons_json: string; size_bytes: number }[];
   return {
-    trip: { ...trip, consignee_phone: maskPhone(trip.consignee_phone), unit: unitFor(trip.client_id) },
+    trip,
     submissions: subs.map((s) => ({ ...s, reasons: JSON.parse(s.reasons_json) as string[], extraction: s.extraction_json ? JSON.parse(s.extraction_json) : null })),
   };
 }

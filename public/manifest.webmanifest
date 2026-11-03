@@ -1,0 +1,2 @@
+{ "name": "PODLink", "short_name": "PODLink", "start_url": "/driver", "display": "standalone", "background_color": "#ffffff", "theme_color": "#1f3a5f",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }] }
