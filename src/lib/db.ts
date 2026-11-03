@@ -67,7 +67,8 @@ CREATE TABLE IF NOT EXISTS pod_submissions (
   extraction_json TEXT,                -- what the AI read (the image remains the source of truth)
   decision TEXT NOT NULL,              -- verified | retake | needs_review
   reasons_json TEXT NOT NULL DEFAULT '[]',
-  corrected_json TEXT                  -- fields corrected by a billing executive
+  corrected_json TEXT,                 -- fields corrected by a billing executive
+  client_ref TEXT UNIQUE               -- idempotency key from the device (safe offline re-sync)
 );
 CREATE INDEX IF NOT EXISTS idx_sub_trip ON pod_submissions(trip_id);
 CREATE TABLE IF NOT EXISTS invoices (
