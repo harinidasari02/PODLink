@@ -54,7 +54,7 @@ export function QueueClient({ groups, invoices }: { groups: QueueGroup[]; invoic
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-5 py-4">
             <div className="flex-1">
               <h2 id={`g-${g.key}`} className="text-base font-semibold">{g.client}</h2>
-              <p className="text-sm text-ink-soft">{g.cycle} cycle · {g.cycle_label} · {g.trips.length} trips</p>
+              <p className="text-sm text-ink-soft">{g.cycle} cycle · {g.cycle_label} · {g.trips.length} {g.trips.length === 1 ? "trip" : "trips"}</p>
             </div>
             <p className="text-lg font-semibold tabular-nums">{inr(totalFor(g))}</p>
             <button className="btn-primary" onClick={() => create(g)} disabled={busy === g.key || !picked[g.key]?.size}>
@@ -85,7 +85,7 @@ export function QueueClient({ groups, invoices }: { groups: QueueGroup[]; invoic
           <div className="card divide-y divide-line">
             {invoices.map((i) => (
               <div key={i.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3.5">
-                <div className="min-w-0 flex-1 basis-48"><p className="font-medium">{i.number}</p><p className="text-sm text-ink-soft">{i.client} · {i.cycle_label} · {i.trip_count} trips</p></div>
+                <div className="min-w-0 flex-1 basis-48"><p className="font-medium">{i.number}</p><p className="text-sm text-ink-soft">{i.client} · {i.cycle_label} · {i.trip_count} {i.trip_count === 1 ? "trip" : "trips"}</p></div>
                 <span className="text-sm font-semibold tabular-nums">{inr(i.total)}</span>
                 <a className="btn-quiet !py-1.5" href={`/api/billing/invoices/${i.id}/export`}><Icon name="download" size={16} /> Export</a>
                 <button className="btn-quiet !py-1.5" onClick={() => { navigator.clipboard?.writeText(clientLink(i.share_token)); setCopied(i.share_token); setTimeout(() => setCopied(''), 1500); }}>

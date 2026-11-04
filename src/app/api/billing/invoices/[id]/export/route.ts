@@ -26,7 +26,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   const lrList = trips.map((t) => t.lr_no).join(', ');
   zip.file('tally-sales-voucher.xml', buildTallyXml({
     company: 'Company A', number: inv.number, date: inv.created_at.slice(0, 10), partyLedger: inv.tally_ledger,
-    total: inv.total, narration: `Freight for ${trips.length} trips, cycle ${inv.cycle_label}. LR: ${lrList}`.slice(0, 900),
+    total: inv.total, narration: `Freight for ${trips.length} ${trips.length === 1 ? "trip" : "trips"}, cycle ${inv.cycle_label}. LR: ${lrList}`.slice(0, 900),
   }));
   const lines = ['trip_id,lr_no,eway_bill_no,vehicle_no,destination,delivered_on,freight,pod_file'];
   for (const t of trips) {

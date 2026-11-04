@@ -19,7 +19,7 @@ export default async function ClientView({ params }: { params: Promise<{ token: 
     <main className="mx-auto max-w-3xl px-5 py-8">
       <Logo />
       <h1 className="mt-6 text-2xl font-semibold">Proofs of delivery · {inv.number}</h1>
-      <p className="mt-1 text-sm text-ink-soft">{inv.client} · {inv.cycle_label} · {trips.length} trips</p>
+      <p className="mt-1 text-sm text-ink-soft">{inv.client} · {inv.cycle_label} · {trips.length} {trips.length === 1 ? "trip" : "trips"}</p>
       <ul className="mt-6 grid gap-4 sm:grid-cols-2">
         {trips.map((t) => (
           <li key={t.id} className="card overflow-hidden">
