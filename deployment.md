@@ -5,8 +5,8 @@
 Requirements: Node.js 20 or newer (tested on 22), npm. No other services are needed. The database is a local SQLite file.
 
 ```bash
-git clone <GITHUB_URL>
-cd podlink
+git clone https://github.com/harinidasari02/PODLink
+cd PODLink
 npm install
 cp .env.example .env.local        # then set SESSION_SECRET (see below)
 npm run dev                       # http://localhost:3000
